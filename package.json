@@ -1,0 +1,30 @@
+{
+  "name": "Beatpack",
+  "version": "0.0.1",
+  "main": "./Beatpack/Main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "npx electron-forge package --platform=linux,darwin,win32"
+  },
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "authors": "LmanTW",
+            "description": "An applaction for creating, sharing and exploring osu! beatmaps"
+          }
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.2.0",
+    "@electron-forge/maker-squirrel": "^7.2.0",
+    "@electron-forge/maker-zip": "^7.2.0",
+    "electron": "^28.2.1",
+    "electron-prebuilt-compile": "^8.2.0",
+    "zip-a-folder": "^3.1.6"
+  }
+}
