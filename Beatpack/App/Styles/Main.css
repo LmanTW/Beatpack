@@ -1,0 +1,46 @@
+@font-face {
+  font-family: Torus;
+  src: url('../Fonts/Torus.otf') format('opentype')
+}
+
+@font-face {
+  font-family: GenJyuuGothic;
+  src: url('../Fonts/GenJyuuGothic.ttf') format('truetype');
+  size-adjust: 85%
+}
+
+:root {
+  --backgroundColor: #24222a;
+  --shadowColor: #1C1B21;
+
+  --mainColor: #302e38;
+
+  --specialColor: #CC3378;
+
+  --textColor: #FFFFFF;
+
+  --textSize1: calc(calc(1vw + 1vh) * 3);
+  --textSize2: calc(calc(1vw + 1vh) * 2.5);
+  --textSize3: calc(calc(1vw + 1vh) * 2);
+  --textSize4: calc(calc(1vw + 1vh) * 1.75);
+  --textSize5: calc(calc(1vw + 1vh) * 1.5);
+  --textSize6: calc(calc(1vw + 1vh) * 1.25)
+}
+
+* {
+  font-family: Torus, GenJyuuGothic;
+}
+
+body {
+  background-color: var(--backgroundColor);
+  margin: 0px;
+}
+
+.text {
+  user-select: none;
+  margin: 0px
+}
+
+.textShadow {
+  text-shadow: calc(calc(1vw + 1vh) * 0.15) calc(calc(1vw + 1vh) * 0.15) var(--shadowColor)
+}

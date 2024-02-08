@@ -1,0 +1,146 @@
+<html>
+  <head>
+    <link href="./Styles/Main.css" rel="stylesheet">
+  </head>
+
+  <style>
+    @keyframes triangles {
+      0% { transform: translateY(25vh); opacity: 0 }
+      20% { transform: translateY(0vh); opacity: 1 }
+      40% { transform: translateY(-25vh); opacity: 1 }
+      60% { transform: translateY(-50vh); opacity: 1 }
+      80% { transform: translateY(-75vh); opacity: 1 }
+      100% { transform: translateY(-100vh); opacity: 1 }
+    }
+  </style>
+
+  <body light:style="display: flex">
+    <div id="content" light:style="display: flex; flex-direction: column; center: row column; width: 100vw; height: 100vh; opacity: 0">
+      <div v-if="currentStep === 0" @click="next" light:style="display: flex; flex-direction: column; center: row column; width: 100vw; height: 100vh; cursor: pointer">
+        <div light:style="display: flex; flex-direction: column; center: row">
+          <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize1]; margin-bottom: [0.1ps]">Setup Beatpack</h1>
+          <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize5]; margin-bottom: [0.1ps]">Click To Continue</h1>
+        </div>
+      </div>
+
+      <div v-if="currentStep === 1" light:style="display: flex; flex-direction: column; center: row">
+        <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize1]; margin-bottom: [0.1ps]">Language</h1>
+        <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize5]; margin-bottom: [2ps]">Choose Your Language</h1>
+        <div light:style="display: flex; flex-wrap: wrap; center: row column; gap: [2ps]; width: [25ps]">
+          <div v-for="languageInfo of languagesInfo" @click="setLanguage(languageInfo.code); next()" light:style="display: flex; center: column; cursor: pointer; transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1)" light:style:hover="transform: scale(1.1)">
+            <img :src="`./Images/Flags/${languageInfo.flag}.svg`" light:style="user-select: none; margin-right: [0.5ps]; width: [1.25ps]; pointer-events: none">
+            <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none">{{languageInfo.name}}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="currentStep === 2" light:style="display: flex; flex-direction: column; center: row">
+        <h1 class="text textShadow" light:content="Welcome" light:style="color: [$textColor]; font-size: [$textSize1]; margin-bottom: [0.1ps]"></h1>
+      </div>
+    </div>
+
+    <div light:style="position: fixed; display: flex; center: column; left: [1ps]; bottom: [1ps]; cursor: pointer" light:trigger="window.electron.sendRequest('open', 'https://github.com/LmanTW/Beatpack')">
+      <light-svg src="./Images/Github.svg" light:style="color: [$textColor]; margin-right: [0.5ps]; width: [1.5ps]"></light-svg>
+      <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none">Github</h1>
+    </div>
+  </body>
+
+  <script src="./Scripts/Vue.js"></script>
+
+  <script type="module">
+    import Animation from './Scripts/Animation.mjs'
+    import Light from './Scripts/Light.mjs'
+
+    import { loadTranslation, Translation } from './Scripts/Translation.js'
+
+    Light.use(Animation)
+    Light.use(Translation)
+
+    const content = document.getElementById('content')
+
+    const component = new Light(document.body)
+
+    let options = {}
+
+    const languagesInfo = await window.electron.sendRequest('getAllLanguagesInfo')
+
+    let transforming = false
+
+    Vue.createApp({
+      data () {
+        return {
+          languagesInfo: Object.keys(languagesInfo).map((languageCode) => {return { code: languageCode, name: languagesInfo[languageCode].name, flag: languagesInfo[languageCode].flag }}),
+
+          currentStep: 0
+        }
+      },
+
+      setup () {
+        const music = new Audio('./Audios/Setup.mp3')
+
+        transforming = true
+
+        Light.Animation.transform(content, {
+          'style.opacity': [0, 1],
+          'style.transform': ['scale(0.9)', 'scale(1)']
+        }, { delay: 500, duration: 1500, easing: 'easeOutCubic', complete: () => transforming = false })
+
+        music.play()
+     
+        music.addEventListener('pause', () => music.play())
+
+        const sizeList = [1, 0.5, 0.5, 1, 0.5, 0.5, 1, 0.5, 0.5, 1, 0.5, 0.5]
+        const positionList = [20, 60, 0, 70, 40, 10, 30, 60, 20, 10, 50, 80]
+
+        let index = 0
+
+        component.Timer.createInterval(1000, async () => {
+          const size = sizeList[index]
+          
+          const element = document.body.appendChild(Light.createElement('div', { style: { position: 'fixed', left: `${positionList[index]}vw`, bottom: '0px', filter: 'brightness(85%)', opacity: 0, animation: `${25-(10*size)}s triangles`, animationTimingFunction: 'linear', animationFillMode: 'forwards', zIndex: -1 }}, [await Light.createSvgElement('./Images/Triangles.svg', { style: { color: `[$specialColor]`, width: `[${30*size}ps]` }})]))
+
+          element.addEventListener('animationend', () => element.remove(), { once: true })
+
+          index++
+
+          if (index >= positionList.length) index = 0
+        }, true)
+      },
+      
+      methods: {
+        next (back) {
+          if (!transforming) {
+            transforming = true
+
+            Light.Animation.transform(content, {
+              'style.opacity': [1, 0],
+              'style.transform': ['scale(1)', 'scale(0.9)']
+            }, { duration: 750, easing: 'easeInOutQuart', complete: () => {
+              content.style.opacity = 0
+
+              if (back === true) this.currentStep--
+              else this.currentStep++
+
+              Light.Animation.transform(content, {
+                'style.opacity': [0, 1],
+                'style.transform': ['scale(0.9)', 'scale(1)']
+              }, { delay: 100, duration: 750, easing: 'easeOutQuart', complete: () => {
+                transforming = false
+              }})
+            }})
+          }
+        },
+
+        setLanguage (languageCode) {
+          options.language = languageCode
+
+          loadTranslation(languageCode)
+        }
+      }
+    }).mount('#content')
+
+    //component.Timer.createInterval(10, () => {
+    //  console.log(true)
+    //})
+  </script>
+</html>
