@@ -4,7 +4,9 @@
     "flag": "US"
   },
   "content": {
-    "Welcome": "Welcome!",
-    "Beatpack is an open-source project led by LmanTW, dedicated to making sharing beatpacks easy.": "Beatpack is an open-source project led by LmanTW, dedicated to making sharing beatpacks easy."
+    "Back": "Back",
+
+    "Welcome!": "Welcome!",
+    "Click To Continue": "Click To Continue"
   }
 }

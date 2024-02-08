@@ -20,4 +20,6 @@
 
   ipcMain.handle('getAllLanguagesInfo', () => {return LanguageManager.getAllLanguagesInfo()})
   ipcMain.handle('getLanguageContent', (_, languageCode) => {return LanguageManager.getLanguageContent(languageCode)})
+
+  ipcMain.handle('saveOptions', (_, settings) => DataManager.saveSettings(settings))
 })()

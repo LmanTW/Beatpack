@@ -40,7 +40,15 @@
       </div>
 
       <div v-if="currentStep === 2" light:style="display: flex; flex-direction: column; center: row">
-        <h1 class="text textShadow" light:content="Welcome" light:style="color: [$textColor]; font-size: [$textSize1]; margin-bottom: [0.1ps]"></h1>
+        <div @click="saveSettings" light:style="display: flex; flex-direction: column; center: row column; width: 100vw; height: 100vh; cursor: pointer">
+          <h1 class="text textShadow" light:content="Welcome!" light:style="color: [$textColor]; font-size: [$textSize1]; margin-bottom: [0.1ps]"></h1>
+          <h1 class="text textShadow" light:content="Click To Continue" light:style="color: [$textColor]; font-size: [$textSize5]; margin-bottom: [0.1ps]"></h1>
+        </div>
+
+        <div @click="next(true)" light:style="position: fixed; display: flex; left: [1ps]; top: [1ps]; cursor: pointer">
+          <light-svg src="./Images/Arrow_Left.svg" light:style="color: [$textColor]; margin-right: [0.5ps]; width: [1.5ps]"></light-svg>
+          <h1 class="text textShadow" light:content="Back" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none"></h1>
+        </div>
       </div>
     </div>
 
@@ -65,11 +73,13 @@
 
     const component = new Light(document.body)
 
-    let options = {}
-
-    const languagesInfo = await window.electron.sendRequest('getAllLanguagesInfo')
+    let settings = {}
 
     let transforming = false
+
+    const music = new Audio('./Audios/Setup.mp3')
+
+    const languagesInfo = await window.electron.sendRequest('getAllLanguagesInfo')
 
     Vue.createApp({
       data () {
@@ -81,8 +91,6 @@
       },
 
       setup () {
-        const music = new Audio('./Audios/Setup.mp3')
-
         transforming = true
 
         Light.Animation.transform(content, {
@@ -99,10 +107,10 @@
 
         let index = 0
 
-        component.Timer.createInterval(1000, async () => {
+        component.Timer.createInterval(1500, async () => {
           const size = sizeList[index]
           
-          const element = document.body.appendChild(Light.createElement('div', { style: { position: 'fixed', left: `${positionList[index]}vw`, bottom: '0px', filter: 'brightness(85%)', opacity: 0, animation: `${25-(10*size)}s triangles`, animationTimingFunction: 'linear', animationFillMode: 'forwards', zIndex: -1 }}, [await Light.createSvgElement('./Images/Triangles.svg', { style: { color: `[$specialColor]`, width: `[${30*size}ps]` }})]))
+          const element = document.body.appendChild(Light.createElement('div', { style: { position: 'fixed', left: `${positionList[index]}vw`, bottom: '0px', filter: 'brightness(85%)', opacity: 0, animation: `${50-(30*size)}s triangles`, animationTimingFunction: 'linear', animationFillMode: 'forwards', zIndex: -1 }}, [await Light.createSvgElement('./Images/Triangles.svg', { style: { color: `[$specialColor]`, width: `[${30*size}ps]` }})]))
 
           element.addEventListener('animationend', () => element.remove(), { once: true })
 
@@ -129,23 +137,28 @@
               Light.Animation.transform(content, {
                 'style.opacity': [0, 1],
                 'style.transform': ['scale(0.9)', 'scale(1)']
-              }, { delay: 100, duration: 750, easing: 'easeOutQuart', complete: () => {
-                transforming = false
-              }})
+              }, { delay: 100, duration: 750, easing: 'easeOutQuart', complete: () => transforming = false })
             }})
           }
         },
 
         setLanguage (languageCode) {
-          options.language = languageCode
+          settings.language = languageCode
 
           loadTranslation(languageCode)
+        },
+
+        async saveSettings () {
+          await window.electron.sendRequest('saveOptions', settings)
+
+          component.Timer.createLoop(20, 50, (count) => music.volume = 1-(count/50))
+
+          Light.Animation.transform(document.body, {
+            'style.opacity': [1, 0],
+            'style.transform': ['scale(1)', 'scale(0.9)']
+          }, { duration: 1000, easing: 'easeInOutQuart', complete: () => window.location.replace('./Frame.html') })
         }
       }
     }).mount('#content')
-
-    //component.Timer.createInterval(10, () => {
-    //  console.log(true)
-    //})
   </script>
 </html>
