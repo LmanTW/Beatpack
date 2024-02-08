@@ -4,6 +4,11 @@
   </head>
 
   <style>
+  @keyframes appear {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+  }
+
     @keyframes triangles {
       0% { transform: translateY(25vh); opacity: 0 }
       20% { transform: translateY(0vh); opacity: 1 }
@@ -39,7 +44,7 @@
       </div>
     </div>
 
-    <div light:style="position: fixed; display: flex; center: column; left: [1ps]; bottom: [1ps]; cursor: pointer" light:trigger="window.electron.sendRequest('open', 'https://github.com/LmanTW/Beatpack')">
+    <div light:style="position: fixed; display: flex; center: column; left: [1ps]; bottom: [1ps]; animation: 2.5s appear 1; cursor: pointer" light:trigger="window.electron.sendRequest('open', 'https://github.com/LmanTW/Beatpack')">
       <light-svg src="./Images/Github.svg" light:style="color: [$textColor]; margin-right: [0.5ps]; width: [1.5ps]"></light-svg>
       <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none">Github</h1>
     </div>
