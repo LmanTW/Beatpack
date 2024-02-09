@@ -1,6 +1,7 @@
 (async () => {
   const { ipcMain, shell } = require('electron')
   const path = require('path')
+  const fs = require('fs')
 
   const LanguageManager = require('./Server/LanguageManager')
   const DataManager = require('./Server/DataManager')
@@ -22,4 +23,6 @@
   ipcMain.handle('getLanguageContent', (_, languageCode) => {return LanguageManager.getLanguageContent(languageCode)})
 
   ipcMain.handle('saveOptions', (_, settings) => DataManager.saveSettings(settings))
+
+  ipcMain.handle('readFile', (_, filePath) => fs.readFileSync(path.join(__dirname, 'App', filePath), 'utf8'))
 })()

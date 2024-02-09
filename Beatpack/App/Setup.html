@@ -4,10 +4,10 @@
   </head>
 
   <style>
-  @keyframes appear {
-    0% { opacity: 0 }
-    100% { opacity: 1 }
-  }
+    @keyframes appear {
+      0% { opacity: 0 }
+      100% { opacity: 1 }
+    }
 
     @keyframes triangles {
       0% { transform: translateY(25vh); opacity: 0 }
@@ -45,14 +45,14 @@
           <h1 class="text textShadow" light:content="Click To Continue" light:style="color: [$textColor]; font-size: [$textSize5]; margin-bottom: [0.1ps]"></h1>
         </div>
 
-        <div @click="next(true)" light:style="position: fixed; display: flex; left: [1ps]; top: [1ps]; cursor: pointer">
+        <div @click="next(true)" light:style="position: fixed; display: flex; left: [1ps]; top: [1ps]; transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer" light:style:hover="transform: scale(1.1)">
           <light-svg src="./Images/Arrow_Left.svg" light:style="color: [$textColor]; margin-right: [0.5ps]; width: [1.5ps]"></light-svg>
           <h1 class="text textShadow" light:content="Back" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none"></h1>
         </div>
       </div>
     </div>
 
-    <div light:style="position: fixed; display: flex; center: column; left: [1ps]; bottom: [1ps]; animation: 2.5s appear 1; cursor: pointer" light:trigger="window.electron.sendRequest('open', 'https://github.com/LmanTW/Beatpack')">
+    <div light:style="position: fixed; display: flex; center: column; left: [1ps]; bottom: [1ps]; animation: 2.5s appear 1; transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer" light:style:hover="transform: scale(1.1)" light:trigger="window.electron.sendRequest('open', 'https://github.com/LmanTW/Beatpack')">
       <light-svg src="./Images/Github.svg" light:style="color: [$textColor]; margin-right: [0.5ps]; width: [1.5ps]"></light-svg>
       <h1 class="text textShadow" light:style="color: [$textColor]; font-size: [$textSize6]; pointer-events: none">Github</h1>
     </div>
@@ -94,8 +94,8 @@
         transforming = true
 
         Light.Animation.transform(content, {
-          'style.opacity': [0, 1],
-          'style.transform': ['scale(0.9)', 'scale(1)']
+          'style.transform': ['scale(0.9)', 'scale(1)'],
+          'style.opacity': [0, 1]
         }, { delay: 500, duration: 1500, easing: 'easeOutCubic', complete: () => transforming = false })
 
         music.play()
@@ -126,8 +126,8 @@
             transforming = true
 
             Light.Animation.transform(content, {
-              'style.opacity': [1, 0],
-              'style.transform': ['scale(1)', 'scale(0.9)']
+              'style.transform': ['scale(1)', 'scale(0.9)'],
+              'style.opacity': [1, 0]
             }, { duration: 750, easing: 'easeInOutQuart', complete: () => {
               content.style.opacity = 0
 
@@ -135,8 +135,8 @@
               else this.currentStep++
 
               Light.Animation.transform(content, {
-                'style.opacity': [0, 1],
-                'style.transform': ['scale(0.9)', 'scale(1)']
+                'style.transform': ['scale(0.9)', 'scale(1)'],
+                'style.opacity': [0, 1]
               }, { delay: 100, duration: 750, easing: 'easeOutQuart', complete: () => transforming = false })
             }})
           }
@@ -154,8 +154,8 @@
           component.Timer.createLoop(20, 50, (count) => music.volume = 1-(count/50))
 
           Light.Animation.transform(document.body, {
-            'style.opacity': [1, 0],
-            'style.transform': ['scale(1)', 'scale(0.9)']
+            'style.transform': ['scale(1)', 'scale(0.9)'],
+            'style.opacity': [1, 0]
           }, { duration: 1000, easing: 'easeInOutQuart', complete: () => window.location.replace('./Frame.html') })
         }
       }

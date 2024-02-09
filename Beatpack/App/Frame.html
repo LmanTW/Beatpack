@@ -3,7 +3,17 @@
     <link href="./Styles/Main.css" rel="stylesheet">
   </head>
 
+  <style>
+    @keyframes appear {
+      0% { transform: scale(0.9); opacity: 0 }
+      100% { transform: scale(1); opacity: 1 }
+    }
+  </style>
+
   <body light:style="background-color: [$backgroundColor]; margin: 0px">
+    <div id="content" light:style="animation: 1s appear 1">
+      <navbar></navbar>
+    </div>
   </body>
 
   <script src="./Scripts/Vue.js"></script>
@@ -11,6 +21,14 @@
   <script type="module">
     import Light from './Scripts/Light.mjs'
 
+    import navbar from './Components/Navbar.js'
+
     new Light(document.body)
+
+    Vue.createApp({
+      components: {
+        navbar
+      }
+    }).mount('#content')
   </script>
 </html>

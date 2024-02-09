@@ -5,19 +5,10 @@ const fs = require('fs')
 
 // Build
 async function build (platforms) {
-  await api.package({
-    dir: path.resolve(__dirname, '../../Beatpack'),
-
-    platform: platforms,
-
-    interactive: true,
-    outDir: path.join(__dirname, 'Cache')
-  })
-
-  //await api.make({
+  //await api.package({
   //  dir: path.resolve(__dirname, '../../Beatpack'),
 
-  //  platform: 'darwin',
+  //  platform: platforms,
 
   //  interactive: true,
   //  outDir: path.join(__dirname, 'Cache')
@@ -25,12 +16,35 @@ async function build (platforms) {
 
   if (!fs.existsSync(path.resolve(__dirname, '../../Builds'))) fs.mkdirSync(path.resolve(__dirname, '../../Builds'))
 
-  if (platforms.includes('win32')) fs.renameSync(path.join(__dirname, 'Cache', 'Beatpack-win32-x64', 'Beatpack.exe'), path.resolve(__dirname, `../../Builds/Beatpack.exe`))
-  if (platforms.includes('darwin')) await zip(path.join(__dirname, 'Cache', 'Beatpack-darwin-x64', 'Beatpack.app'), path.resolve(__dirname, `../../Builds/Beatpack.zip`), { destPath: 'Beatpack.app/' })
+  if (platforms.includes('win32')) {
+    await api.make({
+      dir: path.resolve(__dirname, '../../Beatpack'),
 
-  fs.rmSync(path.join(__dirname, 'Cache'), { recursive: true })
+      platform: 'win32',
+
+      interactive: true,
+      outDir: path.join(__dirname, 'Cache')
+    })
+
+    fs.renameSync(path.join(__dirname, 'Cache', 'make', 'squirrel.window', 'x64', 'Beatpack.exe'), path.resolve(__dirname, `../../Builds/Beatpack.exe`))
+  }
+
+  if (platforms.includes('darwin')) {
+    await api.package({
+      dir: path.resolve(__dirname, '../../Beatpack'),
+
+      platform: platforms,
+
+      interactive: true,
+      outDir: path.join(__dirname, 'Cache')
+    })
+    
+    await zip(path.join(__dirname, 'Cache', 'Beatpack-darwin-x64', 'Beatpack.app'), path.resolve(__dirname, `../../Builds/Beatpack.zip`), { destPath: 'Beatpack.app/' })
+  }
+
+//  fs.rmSync(path.join(__dirname, 'Cache'), { recursive: true })
 }
 
-build(['darwin'])
+build(['win32', 'darwin'])
 
-// build(['win32'])
+// build(['darwin'])

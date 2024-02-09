@@ -13,7 +13,7 @@
           "name": "@electron-forge/maker-squirrel",
           "config": {
             "authors": "LmanTW",
-            "description": "An applaction for creating, sharing and exploring osu! beatmaps"
+            "description": "An applaction for creating, sharing and exploring osu! beatmap pack"
           }
         }
       ]
